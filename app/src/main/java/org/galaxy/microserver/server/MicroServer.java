@@ -50,6 +50,10 @@ public class MicroServer {
 
     }
 
+    public void startServer(){
+        waitForConnectAtThread();
+    }
+
     /**
      *
      */

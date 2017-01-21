@@ -56,8 +56,7 @@ public class ServerService extends Service {
     }
 
     public void startServer() {
-        mServer.waitForConnectAtThread();
-        mServer.loopLiveTestAtThread();
+        mServer.startServer();
     }
 
     public void closeServer() {
