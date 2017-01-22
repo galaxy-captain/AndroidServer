@@ -6,4 +6,9 @@ package org.galaxy.microserver.server;
  * MicroServer门面类
  */
 public class Ship {
+
+    public Ship(){
+        
+    }
+
 }
