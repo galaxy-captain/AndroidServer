@@ -1,12 +1,14 @@
 package org.galaxy.microserver.server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by OoO on 2017/1/21.
  */
-
 public class ServerState {
 
     private MicroServer mServer;
@@ -19,6 +21,14 @@ public class ServerState {
 
     public ServerState(MicroServer server) {
         this.mServer = server;
+    }
+
+    public String getLocalAddress() {
+        return mServer.getConfig().getLocalAddress();
+    }
+
+    public int getPort() {
+        return mServer.getConfig().getPort();
     }
 
     public boolean isRunning() {
@@ -47,8 +57,17 @@ public class ServerState {
         return ++connectionTotal;
     }
 
-    public MicroConnection getConnection(String name){
+    public MicroConnection getConnection(String name) {
         return connectionMap.get(name);
     }
+
+    public Map<String, MicroConnection> getAllConnection() {
+        return connectionMap;
+    }
+
+    public List<String> getAllConnectionName() {
+        return new ArrayList<>(connectionMap.keySet());
+    }
+
 
 }

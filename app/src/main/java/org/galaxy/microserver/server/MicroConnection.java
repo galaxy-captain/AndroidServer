@@ -10,8 +10,7 @@ import java.net.Socket;
 /**
  * Created by OoO on 2017/1/21.
  */
-
-public class MicroConnection {
+public final class MicroConnection {
 
     private final MicroServer mServer;
 
@@ -26,6 +25,7 @@ public class MicroConnection {
     private boolean isConnect = false;
 
     public MicroConnection(MicroServer server, Socket socket) {
+
         this.mServer = server;
         this.mSocket = socket;
 
@@ -36,19 +36,25 @@ public class MicroConnection {
 
         this.mServer.addConnection(this);
 
-        listenStreamAtThread();//
-        loopLiveTestAtThread();//
     }
 
     /**
-     *
+     * 启动输入流监听、心跳守护线程
+     */
+    public void run() {
+        listenStreamAtThread();
+        loopLiveTestAtThread();
+    }
+
+    /**
+     * 客户端连接名称
      */
     public String getName() {
         return name;
     }
 
     /**
-     *
+     * 启动输入流监听线程
      */
     public void listenStreamAtThread() {
 
@@ -64,7 +70,7 @@ public class MicroConnection {
     }
 
     /**
-     *
+     * 输入流监听
      */
     private void listenStream() {
 
@@ -86,7 +92,7 @@ public class MicroConnection {
 
             }
 
-            L.error(name + " connect closed...");
+            L.error("client[" + name + "] connection closed...");
 
         } catch (IOException e) {
             onConnectError(e);
@@ -95,17 +101,17 @@ public class MicroConnection {
     }
 
     /**
-     *
+     * 输入流监听回调
      */
     private void onReceive(byte[] buffer, int length) {
 
         String data = new String(buffer, 0, length);
 
-        L.error(data);
+        L.error("client[" + name + "] receive message -> " + data);
     }
 
     /**
-     *
+     * 向客户端发送数据
      */
     public boolean sendMessageAtMain(String data) {
 
@@ -132,7 +138,7 @@ public class MicroConnection {
     }
 
     /**
-     *
+     * 启动心跳守护线程
      */
     public void loopLiveTestAtThread() {
 
@@ -166,13 +172,13 @@ public class MicroConnection {
     }
 
     /**
-     *
+     * 连接异常时处理
      */
     private void onConnectError(IOException e) {
 
         e.printStackTrace();
 
-        L.error(name + " connect error...");
+        L.error("client[" + name + "] connection error...");
 
         isConnect = false;
 
@@ -180,10 +186,12 @@ public class MicroConnection {
     }
 
     /**
-     *
+     * 是否连接正常
      */
     private boolean isConnected() {
-        return mServer.getState().isRunning() && mSocket.isConnected() && isConnect;
+        return mServer.getState() != null && mServer.getState().isRunning()
+                && mSocket != null && mSocket.isConnected()
+                && isConnect;
     }
 
 }

@@ -6,6 +6,8 @@ import android.os.Binder;
 import android.os.IBinder;
 
 import org.galaxy.microserver.server.MicroServer;
+import org.galaxy.microserver.server.ServerState;
+import org.galaxy.microserver.utils.NetworkUtils;
 
 /**
  * Created by OoO on 2017/1/21.
@@ -18,9 +20,9 @@ public class ServerService extends Service {
         }
     }
 
-    private ServerBinder mBinder = new ServerBinder();
+    private final ServerBinder mBinder = new ServerBinder();
 
-    private MicroServer mServer;
+    private final MicroServer mServer = new MicroServer();
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -31,9 +33,7 @@ public class ServerService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        mServer = new MicroServer();
-
-        mServer.initServer();
+        if (initServer()) startServer();
 
     }
 
@@ -51,8 +51,16 @@ public class ServerService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
-        if (mServer != null)
-            mServer.closeServer();
+        closeServer();
+    }
+
+    public boolean initServer() {
+
+        String localAddress = NetworkUtils.localAddress(this);
+
+        mServer.getConfig().setLocalAddress(localAddress);
+
+        return mServer.initServer();
     }
 
     public void startServer() {
@@ -60,7 +68,11 @@ public class ServerService extends Service {
     }
 
     public void closeServer() {
+        mServer.closeServer();
+    }
 
+    public ServerState getServerState() {
+        return mServer.getState();
     }
 
 }

@@ -14,7 +14,7 @@ public class L {
 
     public static void error(String s) {
         if (isDebug) {
-           Log.e(TAG,s);
+            Log.e(TAG, s);
         }
     }
 

@@ -4,6 +4,8 @@ import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
+import org.galaxy.microserver.server.ServerState;
+
 /**
  * Created by OoO on 2017/1/21.
  */
@@ -14,7 +16,7 @@ public class ServerServiceConnection implements ServiceConnection {
     @Override
     public void onServiceConnected(ComponentName name, IBinder binder) {
         ServerService.ServerBinder serverBinder = (ServerService.ServerBinder) binder;
-        mService  = serverBinder.getService();
+        mService = serverBinder.getService();
     }
 
     @Override
@@ -22,12 +24,16 @@ public class ServerServiceConnection implements ServiceConnection {
 
     }
 
-    public void startServer(){
+    public void startServer() {
         mService.startServer();
     }
 
-    public void closeServer(){
+    public void closeServer() {
         mService.closeServer();
+    }
+
+    public ServerState getServerState() {
+        return mService.getServerState();
     }
 
 }
