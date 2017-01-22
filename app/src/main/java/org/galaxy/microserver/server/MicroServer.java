@@ -12,7 +12,8 @@ import java.util.Map;
 /**
  * Created by OoO on 2017/1/21.
  * <p>
- * 微服务器
+ *
+ * 微服务器基础类
  */
 public class MicroServer {
 

@@ -2,6 +2,8 @@ package org.galaxy.microserver.server;
 
 /**
  * Created by OoO on 2017/1/21.
+ *
+ * 服务器配置类
  */
 public class ServerConfig {
 

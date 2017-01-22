@@ -11,6 +11,8 @@ import org.galaxy.microserver.utils.NetworkUtils;
 
 /**
  * Created by OoO on 2017/1/21.
+ *
+ * 服务器代理服务
  */
 public class ServerService extends Service {
 
