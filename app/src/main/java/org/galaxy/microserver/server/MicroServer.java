@@ -128,7 +128,7 @@ public class MicroServer {
                 int port = socket.getPort();
 
                 // 保存客户端连接
-                new MicroConnection(this, socket).run();
+                new MicroConnection(MicroServer.this, socket).run();
 
                 L.error("new client[" + name + "(" + ip + ":" + port + ")" + "] connect success...");
 
