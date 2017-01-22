@@ -9,6 +9,8 @@ import java.net.Socket;
 
 /**
  * Created by OoO on 2017/1/21.
+ *
+ * 客户端连接类
  */
 public final class MicroConnection {
 
