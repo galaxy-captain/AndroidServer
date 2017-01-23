@@ -108,9 +108,7 @@ final class MicroConnection {
      * 输入流监听回调
      */
     private void onReceive(byte[] buffer, int length) {
-
-        if (mServer != null)
-            mServer.onConnectionReceive(name, buffer, length);
+        if (mServer != null) mServer.onConnectionReceive(name, buffer, length);
     }
 
     /**
