@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by OoO on 2017/1/21.
  * <p>
- *
+ * <p>
  * 微服务器基础类
  */
 public class MicroServer {
@@ -22,6 +22,12 @@ public class MicroServer {
     private ServerConfig mConfig;
 
     private ServerState mState;
+
+    private OnServerReceiveListener onServerReceiveListener;
+
+    public void setOnServerReceiveListener(OnServerReceiveListener onServerReceiveListener) {
+        this.onServerReceiveListener = onServerReceiveListener;
+    }
 
     /**
      * 等待客户端连接的线程
@@ -170,6 +176,16 @@ public class MicroServer {
 
         L.error("Server has closed...");
 
+    }
+
+    public void onConnectionReceive(String name, byte[] buffer, int length) {
+
+        String data = new String(buffer, 0, length);
+
+        L.error("client[" + name + "] receive message -> " + data);
+
+        if (onServerReceiveListener != null)
+            onServerReceiveListener.onReceive(name, buffer, length);
     }
 
     /**

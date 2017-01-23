@@ -9,10 +9,10 @@ import java.net.Socket;
 
 /**
  * Created by OoO on 2017/1/21.
- *
+ * <p>
  * 客户端连接类
  */
-public final class MicroConnection {
+final class MicroConnection {
 
     private final MicroServer mServer;
 
@@ -26,7 +26,18 @@ public final class MicroConnection {
 
     private boolean isConnect = false;
 
-    public MicroConnection(MicroServer server, Socket socket) {
+    private boolean isSending = false;
+
+    private final Thread listenStreamThread = new Thread() {
+
+        @Override
+        public void run() {
+            listenStream();
+        }
+
+    };
+
+    MicroConnection(MicroServer server, Socket socket) {
 
         this.mServer = server;
         this.mSocket = socket;
@@ -43,7 +54,7 @@ public final class MicroConnection {
     /**
      * 启动输入流监听、心跳守护线程
      */
-    public void run() {
+    void run() {
         listenStreamAtThread();
         loopLiveTestAtThread();
     }
@@ -58,17 +69,8 @@ public final class MicroConnection {
     /**
      * 启动输入流监听线程
      */
-    public void listenStreamAtThread() {
-
-        new Thread() {
-
-            @Override
-            public void run() {
-                listenStream();
-            }
-
-        }.start();
-
+    private void listenStreamAtThread() {
+        listenStreamThread.start();
     }
 
     /**
@@ -107,9 +109,8 @@ public final class MicroConnection {
      */
     private void onReceive(byte[] buffer, int length) {
 
-        String data = new String(buffer, 0, length);
-
-        L.error("client[" + name + "] receive message -> " + data);
+        if (mServer != null)
+            mServer.onConnectionReceive(name, buffer, length);
     }
 
     /**
@@ -121,6 +122,8 @@ public final class MicroConnection {
 
             if (!isConnected()) return false;
 
+            isSending = true;
+
             OutputStream stream = mSocket.getOutputStream();
 
             byte[] buffer = data.getBytes();
@@ -129,7 +132,11 @@ public final class MicroConnection {
 
             stream.flush();
 
+            isSending = false;
+
         } catch (IOException e) {
+
+            isSending = false;
 
             onConnectError(e);
 
@@ -142,7 +149,7 @@ public final class MicroConnection {
     /**
      * 启动心跳守护线程
      */
-    public void loopLiveTestAtThread() {
+    private void loopLiveTestAtThread() {
 
         new Thread() {
 
@@ -153,7 +160,12 @@ public final class MicroConnection {
 
                     while (isConnected()) {
 
-                        mSocket.sendUrgentData(0xFF);
+
+                        if (!isSending) {
+                            isSending = true;
+                            mSocket.sendUrgentData(0xFF);
+                            isSending = false;
+                        }
 
                         try {
                             sleep(1000);
@@ -164,6 +176,9 @@ public final class MicroConnection {
                     }
 
                 } catch (IOException e) {
+
+                    isSending = false;
+
                     onConnectError(e);
                 }
 
