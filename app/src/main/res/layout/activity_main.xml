@@ -1,100 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/md_grey_300"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="4dp">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/radius_blue"
-        android:orientation="vertical"
-        android:padding="8dp">
+        app:cardBackgroundColor="@color/md_grey_50"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="地址"
-                android:textColor="@color/md_white_1000"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/serverInfo_localAddress_tv"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:maxLines="1"
-                android:paddingLeft="8dp"
-                android:textColor="@color/md_white_1000"
-                android:textSize="18sp" />
+                android:layout_height="32dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/BlackTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="本地地址" />
+
+                <TextView
+                    android:id="@+id/serverInfo_localAddress_tv"
+                    style="@style/BlackTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:paddingLeft="8dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/BlackTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="监听端口" />
+
+                <TextView
+                    android:id="@+id/serverInfo_port_tv"
+                    style="@style/BlackTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:paddingLeft="8dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/BlackTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="运行状态" />
+
+                <TextView
+                    android:id="@+id/serverInfo_serverState_tv"
+                    style="@style/BlackTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:paddingLeft="8dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="端口"
-                android:textColor="@color/md_white_1000"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/serverInfo_port_tv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:maxLines="1"
-                android:paddingLeft="8dp"
-                android:textColor="@color/md_white_1000"
-                android:textSize="18sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="状态"
-                android:textColor="@color/md_white_1000"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/serverInfo_serverState_tv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:maxLines="1"
-                android:paddingLeft="8dp"
-                android:textColor="@color/md_white_1000"
-                android:textSize="18sp" />
-
-        </LinearLayout>
-    </LinearLayout>
+    </android.support.v7.widget.CardView>
 
     <GridView
         android:id="@+id/activity_main_connection_gv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="auto_fit" />
+        android:layout_marginTop="8dp"
+        android:horizontalSpacing="8dp"
+        android:numColumns="auto_fit"
+        android:scrollbars="none"
+        android:verticalSpacing="8dp" />
 
 </LinearLayout>

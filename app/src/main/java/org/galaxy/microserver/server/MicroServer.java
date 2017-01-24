@@ -170,6 +170,9 @@ public class MicroServer {
             // 判断连接是否正常
             if (socket != null && socket.isConnected()) {
 
+                socket.setKeepAlive(true);
+                socket.setOOBInline(false);
+
                 // 客户端 - 名字
                 String name = socket.getInetAddress().getHostName();
                 // 客户端 - IP地址

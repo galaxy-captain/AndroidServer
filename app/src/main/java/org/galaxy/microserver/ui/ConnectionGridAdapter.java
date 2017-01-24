@@ -53,6 +53,8 @@ public class ConnectionGridAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_connection, parent, false);
 
             holder.nameTv = (TextView) convertView.findViewById(R.id.item_connection_name_tv);
+            holder.ipTv = (TextView) convertView.findViewById(R.id.item_connection_ip_tv);
+            holder.portTv = (TextView) convertView.findViewById(R.id.item_connection_port_tv);
 
             convertView.setTag(holder);
         } else {
@@ -62,6 +64,8 @@ public class ConnectionGridAdapter extends BaseAdapter {
         MicroConnection connection = list.get(position);
 
         holder.nameTv.setText(connection.getName());
+        holder.ipTv.setText(connection.getIP());
+        holder.portTv.setText(String.valueOf(connection.getPort()));
 
         return convertView;
     }
@@ -89,6 +93,8 @@ public class ConnectionGridAdapter extends BaseAdapter {
 
     class Holder {
         TextView nameTv;
+        TextView ipTv;
+        TextView portTv;
     }
 
 }

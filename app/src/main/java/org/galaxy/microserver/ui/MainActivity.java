@@ -16,7 +16,7 @@ import org.galaxy.microserver.server.ServerState;
 import org.galaxy.microserver.server.callback.ConnectionListener;
 import org.galaxy.microserver.service.ServerService;
 import org.galaxy.microserver.service.ServerServiceConnection;
-import org.galaxy.microserver.service.manager.SocketManager;
+import org.galaxy.microserver.utils.NetworkUtils;
 
 /**
  * Created by OoO on 2017/1/21.
@@ -87,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new ConnectionGridAdapter(this);
         vConnection.setAdapter(mAdapter);
 
+        vLocalAddress.setText(NetworkUtils.localAddress(this));
+
     }
 
     @Override
@@ -111,13 +113,13 @@ public class MainActivity extends AppCompatActivity {
         unbind();
     }
 
-    public void addListener(){
+    public void addListener() {
 
         try {
             mConnection.setConnectionListener(mListener);
         } catch (NullPointerException e) {
 
-            new Thread(){
+            new Thread() {
                 @Override
                 public void run() {
                     try {
@@ -145,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
     private void refreshState(ServerState state) {
         vLocalAddress.setText(state.getLocalAddress());
         vPort.setText(state.getPort() + "");
-        vServerState.setText(state.isRunning() ? SUCCESS : CLOSE);
     }
 
 }

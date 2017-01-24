@@ -69,6 +69,14 @@ public final class MicroConnection {
         return name;
     }
 
+    public String getIP(){
+        return ip;
+    }
+
+    public int getPort(){
+        return port;
+    }
+
     /**
      * 启动输入流监听线程
      */

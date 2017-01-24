@@ -8,4 +8,16 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="WhiteTextStyle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/md_white_1000</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="BlackTextStyle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/md_grey_800</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
 </resources>
