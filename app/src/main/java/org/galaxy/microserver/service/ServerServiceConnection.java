@@ -5,6 +5,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 
 import org.galaxy.microserver.server.ServerState;
+import org.galaxy.microserver.server.callback.ConnectionListener;
 
 /**
  * Created by OoO on 2017/1/21.
@@ -28,12 +29,20 @@ public class ServerServiceConnection implements ServiceConnection {
         mService.startServer();
     }
 
-    public void closeServer() {
-        mService.closeServer();
+    public void stopServer() {
+        mService.stopServer();
     }
 
     public ServerState getServerState() {
         return mService.getServerState();
+    }
+
+    public void setConnectionListener(ConnectionListener listener){
+        mService.setConnectionListener(listener);
+    }
+
+    public void removeConnectionListener(ConnectionListener listener){
+        mService.removeConnectionListener(listener);
     }
 
 }

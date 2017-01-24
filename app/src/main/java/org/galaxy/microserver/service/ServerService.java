@@ -7,6 +7,9 @@ import android.os.IBinder;
 
 import org.galaxy.microserver.server.MicroServer;
 import org.galaxy.microserver.server.ServerState;
+import org.galaxy.microserver.server.Sockets;
+import org.galaxy.microserver.server.callback.ConnectionListener;
+import org.galaxy.microserver.utils.L;
 import org.galaxy.microserver.utils.NetworkUtils;
 
 /**
@@ -24,10 +27,13 @@ public class ServerService extends Service {
 
     private final ServerBinder mBinder = new ServerBinder();
 
-    private final MicroServer mServer = new MicroServer();
+    private  Sockets mServer = new Sockets(this);
 
     @Override
     public IBinder onBind(Intent intent) {
+
+        L.error("onBind");
+
         return mBinder;
     }
 
@@ -35,17 +41,17 @@ public class ServerService extends Service {
     public void onCreate() {
         super.onCreate();
 
+        L.error("onCreate");
+
         if (initServer()) startServer();
 
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Override
     public boolean onUnbind(Intent intent) {
+
+        L.error("onUnbind");
+
         return super.onUnbind(intent);
     }
 
@@ -53,28 +59,31 @@ public class ServerService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
-        closeServer();
+        stopServer();
     }
 
     public boolean initServer() {
-
-        String localAddress = NetworkUtils.localAddress(this);
-
-        mServer.getConfig().setLocalAddress(localAddress);
-
-        return mServer.initServer();
+        return mServer.init();
     }
 
     public void startServer() {
-        mServer.startServer();
+        mServer.start();
     }
 
-    public void closeServer() {
-        mServer.closeServer();
+    public void stopServer() {
+        mServer.stop();
     }
 
     public ServerState getServerState() {
         return mServer.getState();
+    }
+
+    public void setConnectionListener(ConnectionListener listener){
+        mServer.setConnectionListener(listener);
+    }
+
+    public void removeConnectionListener(ConnectionListener listener){
+        mServer.removeConnectionListener(listener);
     }
 
 }

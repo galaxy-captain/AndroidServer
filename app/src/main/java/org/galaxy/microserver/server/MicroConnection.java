@@ -12,7 +12,7 @@ import java.net.Socket;
  * <p>
  * 客户端连接类
  */
-final class MicroConnection {
+public final class MicroConnection {
 
     private final MicroServer mServer;
 
@@ -37,7 +37,7 @@ final class MicroConnection {
 
     };
 
-    MicroConnection(MicroServer server, Socket socket) {
+    public MicroConnection(MicroServer server, Socket socket) {
 
         this.mServer = server;
         this.mSocket = socket;
@@ -47,7 +47,7 @@ final class MicroConnection {
 
         this.name = ip + ":" + port;
 
-        this.mServer.addConnection(this);
+        this.mServer.onConnectionAccept(this);
 
     }
 
@@ -55,6 +55,9 @@ final class MicroConnection {
      * 启动输入流监听、心跳守护线程
      */
     void run() {
+
+        isConnect = true;
+
         listenStreamAtThread();
         loopLiveTestAtThread();
     }
@@ -84,8 +87,6 @@ final class MicroConnection {
 
             byte[] buffer = new byte[256];
 
-            isConnect = true;
-
             while (isConnected()) {
 
                 int length = stream.read(buffer);
@@ -96,7 +97,7 @@ final class MicroConnection {
 
             }
 
-            L.error("client[" + name + "] connection closed...");
+            L.error("client[" + getName() + "] end...");
 
         } catch (IOException e) {
             onConnectError(e);
@@ -108,7 +109,12 @@ final class MicroConnection {
      * 输入流监听回调
      */
     private void onReceive(byte[] buffer, int length) {
-        if (mServer != null) mServer.onConnectionReceive(name, buffer, length);
+
+        String data = new String(buffer, 0, length);
+
+        L.error("client[" + getName() + "] receive message -> " + data);
+
+        if (mServer != null) mServer.onConnectionReceive(this, buffer, length);
     }
 
     /**
@@ -132,6 +138,8 @@ final class MicroConnection {
 
             isSending = false;
 
+            onSend(buffer);
+
         } catch (IOException e) {
 
             isSending = false;
@@ -142,6 +150,13 @@ final class MicroConnection {
         }
 
         return true;
+    }
+
+    /**
+     * 输出流回调
+     */
+    private void onSend(byte[] buffer) {
+        if (mServer != null) mServer.onConnectionSend(this, buffer);
     }
 
     /**
@@ -158,11 +173,8 @@ final class MicroConnection {
 
                     while (isConnected()) {
 
-
                         if (!isSending) {
-                            isSending = true;
                             mSocket.sendUrgentData(0xFF);
-                            isSending = false;
                         }
 
                         try {
@@ -174,9 +186,6 @@ final class MicroConnection {
                     }
 
                 } catch (IOException e) {
-
-                    isSending = false;
-
                     onConnectError(e);
                 }
 
@@ -186,27 +195,68 @@ final class MicroConnection {
 
     }
 
+    @Deprecated
+    public boolean testConnection() {
+
+        try {
+
+            if (!isSending) {
+                isSending = true;
+                mSocket.sendUrgentData(0xFF);
+                isSending = false;
+            }
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * 连接异常时处理
      */
     private void onConnectError(IOException e) {
 
-        e.printStackTrace();
+//        e.printStackTrace();
 
-        L.error("client[" + name + "] connection error...");
+        close();
+    }
+
+    public void close() {
+
+        if (!isConnect) return;
 
         isConnect = false;
 
-        mServer.removeConnection(this);
+        try {
+
+            mSocket.close();
+
+        } catch (IOException e) {
+//            e.printStackTrace();
+        }
+
+        mServer.onConnectionClose(this);
+
+        L.error("client[" + getName() + "] connection closed...");
     }
 
     /**
      * 是否连接正常
      */
     private boolean isConnected() {
-        return mServer.getState() != null && mServer.getState().isRunning()
-                && mSocket != null && mSocket.isConnected()
-                && isConnect;
+        return isConnect
+                && mServer.getState() != null && mServer.getState().isRunning()
+                && mSocket != null && mSocket.isConnected();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
     }
 
 }

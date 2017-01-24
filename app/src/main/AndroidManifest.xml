@@ -12,6 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <service android:name=".service.ServerService"/>
+
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -19,7 +21,9 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.ServerService"/>
+        <activity android:name=".ui.FirstActivity">
+
+        </activity>
 
     </application>
 

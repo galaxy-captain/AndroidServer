@@ -5,9 +5,9 @@ import java.util.List;
 
 /**
  * Created by galaxy on 2017/1/23.
+ *
  */
-
-public class HeartbeatThread extends Thread {
+final class HeartbeatThread extends Thread {
 
     private MicroServer mServer;
 
@@ -45,6 +45,13 @@ public class HeartbeatThread extends Thread {
     public void run() {
 
         while (mServer != null && mServer.getState().isRunning()) {
+
+            try {
+                sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             execute();
         }
 

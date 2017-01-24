@@ -35,8 +35,6 @@ public class NetworkUtils {
 
             int ipAddress = wifiInfo.getIpAddress();
 
-            L.error("IP - " + ipAddress);
-
             return formatIP(ipAddress);
 
         } catch (Exception ex) {

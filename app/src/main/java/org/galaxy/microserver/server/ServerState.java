@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by OoO on 2017/1/21.
@@ -17,7 +18,7 @@ public class ServerState {
 
     private int connectionTotal = 0;
 
-    private Map<String, MicroConnection> connectionMap = new HashMap<>();
+    private ConcurrentHashMap<String, MicroConnection> connectionMap = new ConcurrentHashMap<>();
 
     public ServerState(MicroServer server) {
         this.mServer = server;
@@ -69,5 +70,18 @@ public class ServerState {
         return new ArrayList<>(connectionMap.keySet());
     }
 
+    public void closeConnection(MicroConnection connection) {
+        connection.close();
+    }
+
+    public void closeAllConnection() {
+
+        Set<Map.Entry<String, MicroConnection>> set = connectionMap.entrySet();
+
+        for (Map.Entry<String, MicroConnection> entry : set) {
+            closeConnection(entry.getValue());
+        }
+
+    }
 
 }

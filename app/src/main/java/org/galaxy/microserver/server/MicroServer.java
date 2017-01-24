@@ -1,7 +1,7 @@
 package org.galaxy.microserver.server;
 
+import org.galaxy.microserver.server.callback.ConnectionListener;
 import org.galaxy.microserver.utils.L;
-import org.galaxy.microserver.utils.NetworkUtils;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -23,11 +23,55 @@ public class MicroServer {
 
     private ServerState mState;
 
-    private OnServerReceiveListener onServerReceiveListener;
+    /**
+     * -----------------------------------------------------------------------------------------------
+     **/
 
-    public void setOnServerReceiveListener(OnServerReceiveListener onServerReceiveListener) {
-        this.onServerReceiveListener = onServerReceiveListener;
+    private ConnectionListener mListener;
+
+    public void setConnectionListener(ConnectionListener listener) {
+        this.mListener = listener;
     }
+
+    public void removeConnectionListener(ConnectionListener listener) {
+        mListener = null;
+    }
+
+    /**
+     * 回调 --- 新的连接
+     */
+    void onConnectionAccept(MicroConnection connection) {
+
+        addConnection(connection);
+
+        if (mListener != null) mListener.onAccept(connection);
+    }
+
+    /**
+     * 回调 --- 连接异常
+     */
+    void onConnectionClose(MicroConnection connection) {
+
+        removeConnection(connection);
+
+        if (mListener != null) mListener.onClose(connection);
+    }
+
+    /**
+     * 回调 --- 连接发送消息
+     */
+    void onConnectionSend(MicroConnection connection, byte[] buffer) {
+        if (mListener != null) mListener.onSend(connection, buffer);
+    }
+
+    /**
+     * 回调 --- 连接接收消息
+     */
+    void onConnectionReceive(MicroConnection connection, byte[] buffer, int length) {
+        if (mListener != null) mListener.onReceive(connection, buffer, length);
+    }
+
+    /** ----------------------------------------------------------------------------------------------- **/
 
     /**
      * 等待客户端连接的线程
@@ -49,7 +93,7 @@ public class MicroServer {
             }
 
             // 服务器已经关闭
-            L.error("WaitThread stopped that server has been closed...");
+            // L.error("WaitThread stopped that server has been closed...");
 
         }
 
@@ -86,7 +130,7 @@ public class MicroServer {
 
         } catch (IOException e) {
 
-            e.printStackTrace();
+            onError(e);
 
             L.error("Server initialize failed...");
 
@@ -144,7 +188,7 @@ public class MicroServer {
 
         } catch (IOException e) {
 
-            e.printStackTrace();
+            onError(e);
 
             L.error("Wait for connect stopped that Server has been closed...");
         }
@@ -165,10 +209,11 @@ public class MicroServer {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            onError(e);
         }
 
         mState.setRunning(false);
+        mState.closeAllConnection();
 
         mServer = null;
         mState = null;
@@ -178,63 +223,57 @@ public class MicroServer {
 
     }
 
-    public void onConnectionReceive(String name, byte[] buffer, int length) {
+    private void onError(IOException e) {
 
-        String data = new String(buffer, 0, length);
-
-        L.error("client[" + name + "] receive message -> " + data);
-
-        if (onServerReceiveListener != null)
-            onServerReceiveListener.onReceive(name, buffer, length);
     }
 
     /**
      * 增加一个客户端连接
      */
     public void addConnection(MicroConnection connection) {
-        mState.addConnection(connection);
+        if (mState != null) mState.addConnection(connection);
     }
 
     /**
      * 关闭一个客户端连接
      */
     public void removeConnection(MicroConnection connection) {
-        mState.cutConnection(connection);
+        if (mState != null) mState.cutConnection(connection);
     }
 
     /**
      * 获取一个客户端连接
      */
     public MicroConnection getConnection(String name) {
-        return mState.getConnection(name);
+        return mState == null ? null : mState.getConnection(name);
     }
 
     /**
      * 获取全部客户端连接
      */
     public Map<String, MicroConnection> getAllConnection() {
-        return mState.getAllConnection();
+        return mState == null ? null : mState.getAllConnection();
     }
 
     /**
      * 获取用户列表
      */
     public List<String> getAllConnectionName() {
-        return mState.getAllConnectionName();
+        return mState == null ? null : mState.getAllConnectionName();
     }
 
     /**
      * 获取服务器状态
      */
     public ServerState getState() {
-        return mState;
+        return mState == null ? null : mState;
     }
 
     /**
      * 获取服务器配置
      */
     public ServerConfig getConfig() {
-        return mConfig;
+        return mConfig == null ? null : mConfig;
     }
 
 }
